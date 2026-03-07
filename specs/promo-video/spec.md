@@ -4,6 +4,18 @@
 **Created**: 2026-03-04
 **Status**: Draft
 
+## Clarifications
+
+### Session 2026-03-04
+
+- Q: Which accent color should be used — peach or lime? → A: Peach (orange-gold tone, matching the app's existing color palette, e.g. `#FFAB76` range)
+- Q: What background treatment should appear behind the glass cards? → A: Dark gradient (near-black to dark charcoal/navy, vertical or radial)
+- Q: What font family should be used across all scenes? → A: System sans-serif stack (`-apple-system, BlinkMacSystemFont, "Segoe UI"`)
+- Q: What transition style should be used between screenshots in Scene 3? → A: Slide (horizontal translation, simulating a user swiping through settings)
+- Q: What is the layout of the Scene 2 glass panel (full-width vs. centered)? → A: Deferred — to be determined from app screenshots provided by developer
+
+---
+
 ## User Scenarios & Testing
 
 ### User Story 1 — Viewer experiences the full 15-second promo (Priority: P1)
@@ -51,13 +63,14 @@ A developer on this project needs to scaffold the project, preview scenes in Rem
 ### Functional Requirements
 
 - **FR-001**: The video MUST contain exactly 5 scenes playing in sequence: App Intro, Streaming Text Demo, Format Variations, Text Input Demo, End Card.
-- **FR-002**: Scene 1 (App Intro, ~2s / 60 frames) MUST display "Stream Reader" animating into a frosted glass card with a soft ambient glow using the peach or lime accent color.
-- **FR-003**: Scene 2 (Streaming Text Demo, ~5s / 150 frames) MUST animate a text string scrolling horizontally right-to-left, displayed inside a glass morphism panel. Text MUST apply bionic formatting — first letters of each word rendered bold. This scene MUST be built entirely in Remotion code with no screenshots.
-- **FR-004**: Scene 3 (Format Variations, ~5s / 150 frames) MUST cycle through 6–8 screenshots from `public/assets/`, each displayed inside a frosted glass frame, with smooth slide or fade transitions between them to simulate a user changing app settings.
-- **FR-005**: Scene 4 (Text Input Demo, ~2s / 60 frames) MUST display a single screenshot of the text input area inside a glass card, animating in with a fade or slide, holding briefly, then transitioning out.
-- **FR-006**: Scene 5 (End Card, ~1s / 30 frames) MUST display "Stream Reader" and "Available on the App Store" inside a frosted glass card with peach or lime typography and a soft ambient glow.
+- **FR-002**: Scene 1 (App Intro, ~2s / 60 frames) MUST display "Stream Reader" animating into a frosted glass card with a soft ambient glow using the peach accent color (orange-gold tone, e.g. `#FFAB76` range).
+- **FR-003**: Scene 2 (Streaming Text Demo, ~5s / 150 frames) MUST animate a text string scrolling horizontally right-to-left, displayed inside a glass morphism panel. Text MUST apply Anchor formatting — first letters of each word rendered bold. This scene MUST be built entirely in Remotion code with no screenshots.
+- **FR-004**: Scene 3 (Format Variations, ~5s / 150 frames) MUST cycle through 6–8 screenshots from `public/assets/`, each displayed inside a frosted glass frame, with smooth horizontal slide transitions between them to simulate a user swiping through app settings.
+- **FR-005**: Scene 4 (Text Input Demo, ~2s / 60 frames) MUST display a single screenshot of the text input area inside a glass card, animating in with a fade, holding briefly, then transitioning out.
+- **FR-006**: Scene 5 (End Card, ~1s / 30 frames) MUST display "Stream Reader" and "Available on the App Store" inside a frosted glass card with peach typography (orange-gold tone) and a soft ambient glow.
 - **FR-007**: All animations MUST use Remotion's `spring()` or `interpolate()`. CSS transitions and Tailwind animation classes are forbidden per Remotion rendering constraints.
 - **FR-008**: All colors MUST reference design tokens from `src/lib/tokens.ts`. Hard-coded hex values are forbidden in scene files.
+- **FR-013**: All text MUST use the system sans-serif font stack (`-apple-system, BlinkMacSystemFont, "Segoe UI"`) defined as a token in `src/lib/tokens.ts`. No external font loading.
 - **FR-009**: All images MUST use Remotion's `<Img>` component with `staticFile()`. Native HTML `<img>` tags are forbidden.
 - **FR-010**: Each scene MUST reside in its own file under `src/scenes/`. Shared utilities MUST live in `src/lib/`. Composition root is `src/Root.tsx`.
 - **FR-011**: The streaming text placeholder MUST be a passage approximately 80–120 words on the topic of focus and reading, long enough to scroll meaningfully across the screen in 5 seconds.
@@ -69,7 +82,7 @@ A developer on this project needs to scaffold the project, preview scenes in Rem
 - **Scene**: A self-contained React component in `src/scenes/` representing one timed segment.
 - **Design Token**: A TypeScript constant in `src/lib/tokens.ts` — color, blur radius, border style, or glow value.
 - **Screenshot Asset**: A static image file in `public/assets/` referenced via `staticFile()` in Scenes 3 and 4.
-- **Streaming Text**: The horizontally-scrolling, bionic-formatted text string rendered in code in Scene 2.
+- **Streaming Text**: The horizontally-scrolling, Anchor-formatted text string rendered in code in Scene 2.
 
 ---
 
@@ -81,7 +94,7 @@ A developer on this project needs to scaffold the project, preview scenes in Rem
 - **SC-002**: All 5 scenes are visible and playable in Remotion Studio after `npm start`.
 - **SC-003**: A first-time viewer can identify the app name, core feature, and platform within 5 seconds of the video ending.
 - **SC-004**: The streaming text in Scene 2 scrolls at a pace where individual words are readable as they pass — not blurred by speed, not static.
-- **SC-005**: Bionic formatting is visually distinguishable: bold first letters are noticeably heavier than the remainder of each word.
+- **SC-005**: Anchor formatting is visually distinguishable: bold first letters are noticeably heavier than the remainder of each word.
 - **SC-006**: Glass morphism styling is consistent across all scenes — backdrop blur, semi-transparent overlay, and soft border are present on every card and panel.
 - **SC-007**: `npm run build` completes without errors and produces a playable `.mp4`.
 - **SC-008**: Each screenshot transition in Scene 3 completes in under 0.5 seconds, feeling like a user swiping through settings.
@@ -93,6 +106,7 @@ A developer on this project needs to scaffold the project, preview scenes in Rem
 - Screenshots for Scene 3 will be provided in `public/assets/` named `screenshot-01.png` through `screenshot-08.png` (or fewer). Scene 4 screenshot named `text-input.png`.
 - No audio track is in scope.
 - `@remotion/transitions` will be installed to support `TransitionSeries` for scene-to-scene transitions.
-- Total `durationInFrames` in the composition will be calculated to account for transition overlap so net playback = 450 frames.
+- `@remotion/transitions` TransitionSeries **subtracts** transition overlap from total. To achieve 450 frames (15s) net playback with 4 transitions × 15 frames each: scene durations sum to 510, root `durationInFrames = 510 − 60 = 450`. (See research.md Decision 1.)
 - Inline styles are used throughout — Tailwind JIT and CSS-in-JS runtimes are not compatible with Remotion's frame renderer.
 - `npm` is the package manager.
+- Scene background across all 5 scenes is a dark gradient (near-black to dark charcoal/navy), defined as a design token in `src/lib/tokens.ts`.
