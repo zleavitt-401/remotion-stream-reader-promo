@@ -20,7 +20,7 @@
 | Path | Purpose |
 |------|---------|
 | `src/Root.tsx` | Composition root — only file that knows scene order |
-| `src/scenes/` | One file per scene (5 total) |
+| `src/scenes/` | One file per scene (11 total) |
 | `src/lib/tokens.ts` | All design tokens — colors, blur, font, glow |
 | `src/lib/content.ts` | Streaming text string for Scene 2 |
 | `public/assets/` | Screenshot PNGs for Scenes 3 & 4 |
@@ -35,20 +35,26 @@
 
 ## Timing Architecture
 
-- Composition: 1920×1080, 30fps, `durationInFrames: 450` (15s net)
+- Composition: 1920×1080, 30fps, `durationInFrames: 645` (21.5s net)
 - Scene durations (adjusted for TransitionSeries overlap):
 
 | Scene | File | Frames |
 |-------|------|--------|
-| AppIntro | `AppIntro.tsx` | 75 |
-| StreamingTextDemo | `StreamingTextDemo.tsx` | 165 |
-| FormatVariations | `FormatVariations.tsx` | 165 |
-| TextInputDemo | `TextInputDemo.tsx` | 75 |
+| AppIntro | `AppIntro.tsx` | 60 |
+| StreamingTextDemo | `StreamingTextDemo.tsx` | 120 |
+| AnchorDemo | `AnchorDemo.tsx` | 90 |
+| FontVariations | `FontVariations.tsx` | 90 |
+| SizeVariations | `SizeVariations.tsx` | 60 |
+| ColorVariations | `ColorVariations.tsx` | 90 |
+| ThemeVariations | `ThemeVariations.tsx` | 60 |
+| WpmDemo | `WpmDemo.tsx` | 60 |
+| InternationalDemo | `InternationalDemo.tsx` | 90 |
+| TextAreaDemo | `TextAreaDemo.tsx` | 45 |
 | EndCard | `EndCard.tsx` | 30 |
-| **Sum** | | **510** |
+| **Sum** | | **795** |
 
-- 4 transitions × 15 frames = 60 frames subtracted by TransitionSeries
-- Net: 510 − 60 = **450 frames = 15s** ✓
+- 10 transitions × 15 frames = 150 frames subtracted by TransitionSeries
+- Net: 795 − 150 = **645 frames = 21.5s** ✓
 
 ## Glass Morphism Note
 
