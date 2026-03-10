@@ -16,28 +16,25 @@ const CROP_RATIO = 0.62;
 const PHONE_H = 540;
 const PHONE_W = PHONE_H * (390 / 844);
 
+// Cycle color results directly, no picker
 const COLORS = [
-	{src: 'color-picker.png', label: 'Choose your color scheme'},
 	{src: 'color-monochrome.png', label: 'Monochrome'},
 	{src: 'color-pastel.png', label: 'Pastel'},
 	{src: 'color-solarized.png', label: 'Solarized'},
 	{src: 'color-rainbow.png', label: 'Rainbow'},
 ];
-const PICKER_FRAMES = 25;
-const SLIDE_DURATION = 13; // 4 color slides after picker × 13 ≈ 52 + 25 picker = 77, fits 90 frames
+const SLIDE_DURATION = 22; // 4 slides × 22 = 88 frames, fits 90 frame scene
 
 export const ColorVariations: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 
-	const afterPicker = Math.max(0, frame - PICKER_FRAMES);
-	const slideIndex = Math.min(COLORS.length - 1, 1 + Math.floor(afterPicker / SLIDE_DURATION));
-	const activeIndex = frame < PICKER_FRAMES ? 0 : slideIndex;
-	const activeFrame = frame < PICKER_FRAMES ? frame : afterPicker % SLIDE_DURATION;
+	const activeIndex = Math.min(COLORS.length - 1, Math.floor(frame / SLIDE_DURATION));
+	const slideFrame = frame % SLIDE_DURATION;
 
 	const imgProgress = spring({
 		fps,
-		frame: activeIndex === 0 ? frame : activeFrame,
+		frame: activeIndex === 0 ? frame : slideFrame,
 		config: {mass: 0.8, damping: 14, stiffness: 90},
 	});
 

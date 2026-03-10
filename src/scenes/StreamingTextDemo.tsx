@@ -56,7 +56,7 @@ export const StreamingTextDemo: React.FC = () => {
 
 	// Scroll starts at frame 15, runs to frame 155
 	// Text estimated width: ~7800px for ~100 words at fontSize 36 + spacing
-	const TEXT_ESTIMATED_WIDTH = 3900;
+	const TEXT_ESTIMATED_WIDTH = 2000;
 	const PANEL_WIDTH = width * 0.72;
 	const scrollX = interpolate(frame, [15, 155], [PANEL_WIDTH * 0.5, -TEXT_ESTIMATED_WIDTH], {
 		extrapolateLeft: 'clamp',

@@ -15,30 +15,23 @@ const CROP_RATIO = 0.62;
 const PHONE_H = 540;
 const PHONE_W = PHONE_H * (390 / 844);
 
-// Show font picker first (~30 frames), then cycle through font screenshots
-const PICKER_FRAMES = 30;
+// Cycle through font result screenshots, no picker
 const FONT_SCREENSHOTS = [
-	{src: 'font-picker.png', label: 'Choose your font'},
 	{src: 'font-georgia.png', label: 'Georgia'},
 	{src: 'anchor-on-lexend.png', label: 'Lexend'},
 ];
+const SLIDE_DURATION = 45; // 2 slides × 45 = 90 frames fits scene duration
 
 export const FontVariations: React.FC = () => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
 
-	// Which slide are we on?
-	const SLIDE_DURATION = 30;
-	const slideIndex = Math.min(
-		FONT_SCREENSHOTS.length - 1,
-		Math.floor(Math.max(0, frame - PICKER_FRAMES) / SLIDE_DURATION)
-	);
-
-	const slideFrame = Math.max(0, frame - PICKER_FRAMES) % SLIDE_DURATION;
+	const slideIndex = Math.min(FONT_SCREENSHOTS.length - 1, Math.floor(frame / SLIDE_DURATION));
+	const slideFrame = frame % SLIDE_DURATION;
 
 	const imgProgress = spring({
 		fps,
-		frame: slideIndex === 0 && frame < PICKER_FRAMES ? frame : slideFrame,
+		frame: slideIndex === 0 ? frame : slideFrame,
 		config: {mass: 0.8, damping: 14, stiffness: 90},
 	});
 	const imgOpacity = interpolate(imgProgress, [0, 1], [0, 1]);
